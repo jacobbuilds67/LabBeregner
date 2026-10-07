@@ -2,6 +2,8 @@
 
 LabBeregner er en lille dansk PWA til enhedsomregning og vejledende beregninger af minimumsvægt og procestolerance. Appen er bygget i almindelig HTML, CSS og JavaScript og har ingen eksterne afhængigheder.
 
+Den publicerede app findes på [jacobbuilds67.github.io/LabBeregner](https://jacobbuilds67.github.io/LabBeregner/).
+
 ## Start lokalt
 
 Appen skal åbnes gennem en lokal webserver, så moduler og service worker fungerer korrekt:
