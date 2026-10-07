@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="da">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#071a1d">
+    <meta name="description" content="Omregning og teoretiske minimumsvægtsberegninger til laboratoriebrug.">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="LabBeregner">
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+    <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="./styles.css">
+    <title>LabBeregner</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Gå til indhold</a>
+
+    <header class="app-header">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48" role="img"><path d="M18 6h12M21 6v12L10 37a4 4 0 0 0 3.5 5h21a4 4 0 0 0 3.5-5L27 18V6M16 31h16"/></svg>
+      </div>
+      <div>
+        <p class="eyebrow">Laboratorieværktøj</p>
+        <h1>LabBeregner</h1>
+      </div>
+      <button class="icon-button" id="info-button" type="button" aria-label="Om beregningerne" aria-haspopup="dialog">
+        <span aria-hidden="true">i</span>
+      </button>
+    </header>
+
+    <nav class="tabs" aria-label="Hovedfunktioner">
+      <button class="tab is-active" type="button" role="tab" aria-selected="true" aria-controls="converter-panel" id="converter-tab" data-panel="converter-panel">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 7h11l-3-3m3 3-3 3M17 17H6l3 3m-3-3 3-3"/></svg>
+        Omregner
+      </button>
+      <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="scale-panel" id="scale-tab" data-panel="scale-panel" tabindex="-1">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 20h12M8 20l1-7h6l1 7M12 4v9M7 8h10M5 8l-2 5h4L5 8Zm14 0-2 5h4l-2-5Z"/></svg>
+        Find vægt
+      </button>
+      <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tolerance-panel" id="tolerance-tab" data-panel="tolerance-panel" tabindex="-1">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="m9 12 2 2 4-5"/></svg>
+        Find tolerance
+      </button>
+    </nav>
+
+    <main id="main-content">
+      <section class="panel is-active" id="converter-panel" role="tabpanel" aria-labelledby="converter-tab">
+        <div class="intro">
+          <p class="section-kicker">Hurtig omregning</p>
+          <h2>Fra én enhed til en anden</h2>
+          <p>Masse og volumen kan omregnes direkte. Ved skift mellem dem bruger vi massefylden.</p>
+        </div>
+
+        <div class="card converter-card">
+          <div class="field">
+            <label for="converter-value">Værdi</label>
+            <div class="input-shell input-shell--large">
+              <input id="converter-value" inputmode="decimal" autocomplete="off" value="1" aria-describedby="converter-error">
+              <select id="converter-from" aria-label="Fra enhed">
+                <optgroup label="Masse">
+                  <option value="kg">kg</option>
+                  <option value="g" selected>g</option>
+                  <option value="mg">mg</option>
+                </optgroup>
+                <optgroup label="Volumen">
+                  <option value="L">L</option>
+                  <option value="mL">mL</option>
+                  <option value="µL">µL</option>
+                  <option value="nL">nL</option>
+                </optgroup>
+              </select>
+            </div>
+            <p class="field-error" id="converter-error" aria-live="polite"></p>
+          </div>
+
+          <button class="swap-button" id="swap-units" type="button" aria-label="Byt enheder">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 7h11l-3-3m3 3-3 3M17 17H6l3 3m-3-3 3-3"/></svg>
+          </button>
+
+          <div class="result-block" aria-live="polite">
+            <span class="result-label">Resultat</span>
+            <div class="result-line"><strong id="converter-result">1</strong><span id="converter-to-label">mL</span></div>
+            <select id="converter-to" aria-label="Til enhed">
+              <optgroup label="Masse">
+                <option value="kg">kg</option>
+                <option value="g">g</option>
+                <option value="mg">mg</option>
+              </optgroup>
+              <optgroup label="Volumen">
+                <option value="L">L</option>
+                <option value="mL" selected>mL</option>
+                <option value="µL">µL</option>
+                <option value="nL">nL</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="density-panel" id="density-panel">
+            <div class="density-heading">
+              <div>
+                <span class="field-label">Massefylde</span>
+                <p>Bruges ved omregning mellem masse og volumen.</p>
+              </div>
+              <button class="chip is-selected" id="water-density" type="button">Vand · 1,000</button>
+            </div>
+            <div class="input-with-unit">
+              <input id="density" inputmode="decimal" autocomplete="off" value="1,000" aria-label="Massefylde" aria-describedby="density-help density-error">
+              <span>g/mL</span>
+            </div>
+            <p class="field-error" id="density-error" aria-live="polite"></p>
+            <p class="hint" id="density-help">Massefylde afhænger af materiale og temperatur. Den indtastede værdi bruges direkte.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="scale-panel" role="tabpanel" aria-labelledby="scale-tab" hidden>
+        <div class="intro">
+          <p class="section-kicker">Vælg den rette opløsning</p>
+          <h2>Hvilken vægt har du brug for?</h2>
+          <p>Beregn den fineste nødvendige deling ud fra din mindste nettovægt.</p>
+        </div>
+
+        <div class="card form-card">
+          <div class="field-grid">
+            <div class="field field--wide">
+              <label for="scale-net-weight">Mindste nettovægt</label>
+              <div class="input-shell">
+                <input id="scale-net-weight" inputmode="decimal" autocomplete="off" value="16,4">
+                <select id="scale-unit" aria-label="Nettovægtens enhed">
+                  <option value="kg">kg</option><option value="g" selected>g</option><option value="mg">mg</option>
+                </select>
+              </div>
+              <p class="field-error" id="scale-net-weight-error"></p>
+            </div>
+            <div class="field">
+              <label for="scale-tolerance">Procestolerance</label>
+              <div class="input-with-unit"><input id="scale-tolerance" inputmode="decimal" value="1"><span>%</span></div>
+              <p class="field-error" id="scale-tolerance-error"></p>
+            </div>
+            <div class="field">
+              <label for="scale-safety">Sikkerhedsfaktor</label>
+              <input id="scale-safety" inputmode="decimal" value="2">
+              <div class="quick-values" aria-label="Vælg sikkerhedsfaktor">
+                <button type="button" data-target="scale-safety" data-value="1">1</button>
+                <button type="button" class="is-selected" data-target="scale-safety" data-value="2">2</button>
+                <button type="button" data-target="scale-safety" data-value="3">3</button>
+                <button type="button" data-target="scale-safety" data-value="5">5</button>
+              </div>
+              <p class="field-error" id="scale-safety-error"></p>
+            </div>
+          </div>
+
+          <div class="answer-card" aria-live="polite">
+            <span class="answer-label">Nødvendigt antal decimaler</span>
+            <strong id="scale-decimals">1 decimal</strong>
+            <p id="scale-division">Anbefalet deling: 0,1 g</p>
+            <div class="answer-meta"><span>Maksimal deling</span><span id="scale-maximum">0,1 g</span></div>
+          </div>
+        </div>
+
+        <details class="card details-card">
+          <summary>Beregn minimumsvægt for en valgt deling</summary>
+          <div class="details-content">
+            <div class="field-grid">
+              <div class="field">
+                <label for="minimum-division">Vægtens deling</label>
+                <div class="input-shell"><input id="minimum-division" inputmode="decimal" value="0,1"><select id="minimum-unit" aria-label="Delingens enhed"><option value="kg">kg</option><option value="g" selected>g</option><option value="mg">mg</option></select></div>
+              </div>
+              <div class="field">
+                <label for="minimum-tolerance">Procestolerance</label>
+                <div class="input-with-unit"><input id="minimum-tolerance" inputmode="decimal" value="1"><span>%</span></div>
+              </div>
+              <div class="field">
+                <label for="minimum-safety">Sikkerhedsfaktor</label>
+                <input id="minimum-safety" inputmode="decimal" value="2">
+              </div>
+            </div>
+            <p class="field-error" id="minimum-error" aria-live="polite"></p>
+            <div class="compact-result"><span>Mindste nettovægt</span><strong id="minimum-result">16,4 g</strong><small id="minimum-base">Minimumsvægt uden sikkerhedsfaktor: 8,2 g</small></div>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel" id="tolerance-panel" role="tabpanel" aria-labelledby="tolerance-tab" hidden>
+        <div class="intro">
+          <p class="section-kicker">Vurder din valgte vægt</p>
+          <h2>Hvilken tolerance kræves?</h2>
+          <p>Se den procestolerance, du mindst skal acceptere ved den valgte nettovægt og deling.</p>
+        </div>
+
+        <div class="card form-card">
+          <div class="field-grid">
+            <div class="field field--wide">
+              <label for="tolerance-net-weight">Mindste nettovægt</label>
+              <div class="input-shell"><input id="tolerance-net-weight" inputmode="decimal" value="16,4"><select id="tolerance-unit" aria-label="Nettovægtens enhed"><option value="kg">kg</option><option value="g" selected>g</option><option value="mg">mg</option></select></div>
+              <p class="field-error" id="tolerance-net-weight-error"></p>
+            </div>
+          </div>
+
+          <fieldset class="choice-field">
+            <legend>Angiv vægtens opløsning som</legend>
+            <div class="segmented-control">
+              <label><input type="radio" name="resolution-mode" value="division" checked><span>Deling</span></label>
+              <label><input type="radio" name="resolution-mode" value="decimals"><span>Decimaler</span></label>
+            </div>
+          </fieldset>
+
+          <div class="field-grid">
+            <div class="field" id="division-field">
+              <label for="tolerance-division">Vægtens deling</label>
+              <div class="input-with-unit"><input id="tolerance-division" inputmode="decimal" value="0,1"><span id="tolerance-division-unit">g</span></div>
+              <p class="field-error" id="tolerance-division-error"></p>
+            </div>
+            <div class="field" id="decimals-field" hidden>
+              <label for="tolerance-decimals">Antal decimaler</label>
+              <select id="tolerance-decimals"><option value="0">0</option><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select>
+            </div>
+            <div class="field">
+              <label for="tolerance-safety">Sikkerhedsfaktor</label>
+              <input id="tolerance-safety" inputmode="decimal" value="2">
+              <div class="quick-values" aria-label="Vælg sikkerhedsfaktor"><button type="button" data-target="tolerance-safety" data-value="1">1</button><button type="button" class="is-selected" data-target="tolerance-safety" data-value="2">2</button><button type="button" data-target="tolerance-safety" data-value="3">3</button><button type="button" data-target="tolerance-safety" data-value="5">5</button></div>
+              <p class="field-error" id="tolerance-safety-error"></p>
+            </div>
+            <div class="field field--wide">
+              <label for="desired-tolerance">Ønsket procestolerance <span class="optional">valgfri</span></label>
+              <div class="input-with-unit"><input id="desired-tolerance" inputmode="decimal" placeholder="Fx 1"><span>%</span></div>
+              <p class="field-error" id="desired-tolerance-error"></p>
+            </div>
+          </div>
+
+          <div class="answer-card answer-card--tolerance" aria-live="polite">
+            <span class="answer-label">Nødvendig procestolerance</span>
+            <strong id="tolerance-result">1,00 %</strong>
+            <p id="absolute-result">Absolut tolerance: 0,164 g</p>
+            <div class="comparison" id="tolerance-comparison" hidden></div>
+          </div>
+
+          <details class="formula-details">
+            <summary>Se beregningen</summary>
+            <p id="tolerance-formula">T = (0,82 × 0,1 × 2) / 16,4 = 0,01</p>
+            <p>Beregningen anvender den teoretiske 0,41d-regel.</p>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <aside class="disclaimer"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 8v5m0 3h.01M10.3 4.7 3.1 17.2A2 2 0 0 0 4.8 20h14.4a2 2 0 0 0 1.7-2.8L13.7 4.7a2 2 0 0 0-3.4 0Z"/></svg><p>Beregningerne er vejledende og erstatter ikke en officiel kvalificering eller GWP-vurdering af vægten.</p></aside>
+
+    <dialog id="info-dialog" aria-labelledby="info-title">
+      <div class="dialog-header"><div><p class="section-kicker">Om modellen</p><h2 id="info-title">Sådan beregner vi</h2></div><button class="icon-button" id="close-dialog" type="button" aria-label="Luk">×</button></div>
+      <p>Minimumsvægten beregnes med den teoretiske <strong>0,41d-regel</strong>, hvor d er vægtens deling. Modellen bruger ikke målt repeterbarhed.</p>
+      <div class="formula-box"><span>Mindste nettovægt</span><code>(0,82 × d × sikkerhedsfaktor) / tolerance</code></div>
+      <p>Resultaterne er hurtige, vejledende estimater. Brug en officiel kvalificering eller GWP-vurdering, når resultatet skal dokumenteres.</p>
+      <button class="primary-button" id="dialog-ok" type="button">Forstået</button>
+    </dialog>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
