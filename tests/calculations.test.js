@@ -44,15 +44,21 @@ test("beregner maksimal deling og anbefaler en gyldig standarddeling", () => {
   const maximum = calculateMaximumDivision(16.4, 1, 2);
   closeTo(maximum, 0.1);
   closeTo(recommendDivision(maximum), 0.1);
-  closeTo(recommendDivision(0.07), 0.05);
+  closeTo(recommendDivision(0.07), 0.01);
   closeTo(recommendDivision(0.049), 0.01);
+});
+
+test("bruger kun 2- og 5-delinger, når de vælges aktivt", () => {
+  closeTo(recommendDivision(0.07), 0.01);
+  closeTo(recommendDivision(0.07, 2), 0.02);
+  closeTo(recommendDivision(0.07, 5), 0.05);
 });
 
 test("angiver vægtens decimaler på gramvisningen", () => {
   const result = calculateScaleRecommendation(1, "mg", 1, 2);
   closeTo(result.maximumInUnit, 0.006097560975609756);
-  closeTo(result.recommendedInUnit, 0.005);
-  closeTo(result.recommendedGrams, 0.000005);
+  closeTo(result.recommendedInUnit, 0.001);
+  closeTo(result.recommendedGrams, 0.000001);
   assert.equal(result.decimals, 6);
   assert.equal(decimalPlacesForDivision(result.recommendedGrams), 6);
 });

@@ -11,7 +11,7 @@
     <link rel="manifest" href="./manifest.webmanifest">
     <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
     <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="./styles.css?v=2">
+    <link rel="stylesheet" href="./styles.css?v=3">
     <title>LabBeregner</title>
   </head>
   <body>
@@ -152,6 +152,16 @@
             </div>
           </div>
 
+          <fieldset class="choice-field division-series-field">
+            <legend>Vægtens delingstype</legend>
+            <div class="segmented-control segmented-control--three">
+              <label><input type="radio" name="scale-division-series" value="1" checked><span>1-deling</span></label>
+              <label><input type="radio" name="scale-division-series" value="2"><span>2-deling</span></label>
+              <label><input type="radio" name="scale-division-series" value="5"><span>5-deling</span></label>
+            </div>
+            <p class="hint">1-deling er standard. Vælg kun 2 eller 5, hvis den konkrete vægt bruger denne deling.</p>
+          </fieldset>
+
           <div class="answer-card" aria-live="polite">
             <span class="answer-label">Nødvendigt antal decimaler i gram</span>
             <strong id="scale-decimals">1 decimal</strong>
@@ -214,7 +224,7 @@
               <p class="field-error" id="tolerance-division-error"></p>
             </div>
             <div class="field" id="decimals-field" hidden>
-              <label for="tolerance-decimals">Antal decimaler i gram</label>
+              <label for="tolerance-decimals">Antal decimaler i gram (1-deling)</label>
               <select id="tolerance-decimals"><option value="0">0</option><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select>
             </div>
             <div class="field">
@@ -256,6 +266,6 @@
       <button class="primary-button" id="dialog-ok" type="button">Forstået</button>
     </dialog>
 
-    <script type="module" src="./app.js?v=2"></script>
+    <script type="module" src="./app.js?v=3"></script>
   </body>
 </html>

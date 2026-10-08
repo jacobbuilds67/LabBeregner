@@ -8,7 +8,7 @@ import {
   divisionFromGramDecimals,
   formatDanish,
   parseDanishNumber
-} from "./calculations.js?v=2";
+} from "./calculations.js?v=3";
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -76,6 +76,7 @@ function updateScaleFinder() {
   const tolerance = valueOf("#scale-tolerance");
   const safety = valueOf("#scale-safety");
   const unit = $("#scale-unit").value;
+  const divisionSeries = Number($("input[name='scale-division-series']:checked").value);
   const valid = [
     validatePositive(weight, "#scale-net-weight-error", "Nettovægten"),
     validatePositive(tolerance, "#scale-tolerance-error", "Procestolerancen"),
@@ -90,13 +91,13 @@ function updateScaleFinder() {
   }
 
   try {
-    const recommendation = calculateScaleRecommendation(weight, unit, tolerance, safety);
+    const recommendation = calculateScaleRecommendation(weight, unit, tolerance, safety, divisionSeries);
     const { decimals } = recommendation;
     const equivalent = unit === "g"
       ? ""
       : ` (${formatDanish(recommendation.recommendedInUnit, { maximumFractionDigits: 15 })} ${unit})`;
     $("#scale-decimals").textContent = `${decimals} ${decimals === 1 ? "decimal" : "decimaler"}`;
-    $("#scale-division").textContent = `Anbefalet deling: ${formatDanish(recommendation.recommendedGrams, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })} g${equivalent}`;
+    $("#scale-division").textContent = `Anbefalet ${divisionSeries}-deling: ${formatDanish(recommendation.recommendedGrams, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })} g${equivalent}`;
     $("#scale-maximum").textContent = `${formatDanish(recommendation.maximumGrams, { maximumFractionDigits: 15 })} g`;
     saveSettings();
   } catch (error) {
@@ -254,6 +255,7 @@ function initialise() {
 
   ["#scale-net-weight", "#scale-tolerance", "#scale-safety"].forEach((selector) => $(selector).addEventListener("input", updateScaleFinder));
   $("#scale-unit").addEventListener("change", updateScaleFinder);
+  $$("input[name='scale-division-series']").forEach((input) => input.addEventListener("change", updateScaleFinder));
   ["#minimum-division", "#minimum-tolerance", "#minimum-safety"].forEach((selector) => $(selector).addEventListener("input", updateMinimumWeight));
   $("#minimum-unit").addEventListener("change", updateMinimumWeight);
 

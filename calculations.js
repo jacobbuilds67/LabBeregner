@@ -110,11 +110,11 @@ export function calculateRequiredTolerance(netWeight, division, safetyFactor = 2
   };
 }
 
-export function calculateScaleRecommendation(netWeight, unit, tolerancePercent, safetyFactor = 2) {
+export function calculateScaleRecommendation(netWeight, unit, tolerancePercent, safetyFactor = 2, divisionSeries = 1) {
   if (!UNITS[unit] || UNITS[unit].type !== "mass") throw new Error("Vælg en gyldig masseenhed");
   const maximumInUnit = calculateMaximumDivision(netWeight, tolerancePercent, safetyFactor);
   const maximumGrams = convertValue(maximumInUnit, unit, "g");
-  const recommendedGrams = recommendDivision(maximumGrams);
+  const recommendedGrams = recommendDivision(maximumGrams, divisionSeries);
   return {
     maximumInUnit,
     maximumGrams,
@@ -130,14 +130,14 @@ export function divisionFromGramDecimals(decimals, targetUnit = "g") {
   return convertValue(10 ** -decimals, "g", targetUnit);
 }
 
-export function recommendDivision(maximumDivision) {
+export function recommendDivision(maximumDivision, divisionSeries = 1) {
   validatePositive(maximumDivision, "Den maksimale deling");
+  if (![1, 2, 5].includes(divisionSeries)) throw new Error("Delingstypen skal være 1, 2 eller 5");
   const highestPower = Math.ceil(Math.log10(maximumDivision)) + 1;
   const candidates = [];
 
   for (let power = highestPower; power >= -15; power -= 1) {
-    const base = 10 ** power;
-    candidates.push(base, 5 * 10 ** (power - 1));
+    candidates.push(divisionSeries * 10 ** power);
   }
 
   const sorted = [...new Set(candidates)].sort((a, b) => b - a);

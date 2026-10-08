@@ -238,6 +238,8 @@ input[aria-invalid="true"] { border-color: var(--danger); }
 
 .choice-field { margin: 20px 0; padding: 0; border: 0; }
 .segmented-control { display: grid; grid-template-columns: repeat(2, 1fr); padding: 4px; background: #081d20; border: 1px solid var(--border); border-radius: 13px; }
+.segmented-control--three { grid-template-columns: repeat(3, 1fr); }
+.division-series-field { margin-bottom: 0; }
 .segmented-control input { position: absolute; opacity: 0; pointer-events: none; }
 .segmented-control span { display: grid; min-height: 42px; place-items: center; border-radius: 9px; color: var(--muted); font-size: 0.79rem; font-weight: 720; }
 .segmented-control input:checked + span { color: var(--accent-ink); background: var(--accent); }
