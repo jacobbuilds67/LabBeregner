@@ -110,6 +110,26 @@ export function calculateRequiredTolerance(netWeight, division, safetyFactor = 2
   };
 }
 
+export function calculateScaleRecommendation(netWeight, unit, tolerancePercent, safetyFactor = 2) {
+  if (!UNITS[unit] || UNITS[unit].type !== "mass") throw new Error("Vælg en gyldig masseenhed");
+  const maximumInUnit = calculateMaximumDivision(netWeight, tolerancePercent, safetyFactor);
+  const maximumGrams = convertValue(maximumInUnit, unit, "g");
+  const recommendedGrams = recommendDivision(maximumGrams);
+  return {
+    maximumInUnit,
+    maximumGrams,
+    recommendedInUnit: convertValue(recommendedGrams, "g", unit),
+    recommendedGrams,
+    decimals: decimalPlacesForDivision(recommendedGrams)
+  };
+}
+
+export function divisionFromGramDecimals(decimals, targetUnit = "g") {
+  if (!Number.isInteger(decimals) || decimals < 0) throw new Error("Antal decimaler skal være et heltal på 0 eller mere");
+  if (!UNITS[targetUnit] || UNITS[targetUnit].type !== "mass") throw new Error("Vælg en gyldig masseenhed");
+  return convertValue(10 ** -decimals, "g", targetUnit);
+}
+
 export function recommendDivision(maximumDivision) {
   validatePositive(maximumDivision, "Den maksimale deling");
   const highestPower = Math.ceil(Math.log10(maximumDivision)) + 1;

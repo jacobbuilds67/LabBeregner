@@ -1,14 +1,14 @@
 import {
   UNITS,
-  calculateMaximumDivision,
   calculateMinimumWeight,
   calculateRequiredTolerance,
+  calculateScaleRecommendation,
   convertValue,
   decimalPlacesForDivision,
+  divisionFromGramDecimals,
   formatDanish,
-  parseDanishNumber,
-  recommendDivision
-} from "./calculations.js";
+  parseDanishNumber
+} from "./calculations.js?v=2";
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -90,12 +90,14 @@ function updateScaleFinder() {
   }
 
   try {
-    const maximum = calculateMaximumDivision(weight, tolerance, safety);
-    const recommended = recommendDivision(maximum);
-    const decimals = decimalPlacesForDivision(recommended);
+    const recommendation = calculateScaleRecommendation(weight, unit, tolerance, safety);
+    const { decimals } = recommendation;
+    const equivalent = unit === "g"
+      ? ""
+      : ` (${formatDanish(recommendation.recommendedInUnit, { maximumFractionDigits: 15 })} ${unit})`;
     $("#scale-decimals").textContent = `${decimals} ${decimals === 1 ? "decimal" : "decimaler"}`;
-    $("#scale-division").textContent = `Anbefalet deling: ${formatDanish(recommended, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })} ${unit}`;
-    $("#scale-maximum").textContent = `${formatDanish(maximum, { maximumFractionDigits: 15 })} ${unit}`;
+    $("#scale-division").textContent = `Anbefalet deling: ${formatDanish(recommendation.recommendedGrams, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })} g${equivalent}`;
+    $("#scale-maximum").textContent = `${formatDanish(recommendation.maximumGrams, { maximumFractionDigits: 15 })} g`;
     saveSettings();
   } catch (error) {
     $("#scale-decimals").textContent = "Uden for område";
@@ -122,7 +124,9 @@ function updateMinimumWeight() {
 
 function selectedToleranceDivision() {
   const mode = $("input[name='resolution-mode']:checked").value;
-  if (mode === "decimals") return 10 ** -Number($("#tolerance-decimals").value);
+  if (mode === "decimals") {
+    return divisionFromGramDecimals(Number($("#tolerance-decimals").value), $("#tolerance-unit").value);
+  }
   return valueOf("#tolerance-division");
 }
 

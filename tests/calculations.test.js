@@ -4,7 +4,10 @@ import {
   calculateMaximumDivision,
   calculateMinimumWeight,
   calculateRequiredTolerance,
+  calculateScaleRecommendation,
   convertValue,
+  decimalPlacesForDivision,
+  divisionFromGramDecimals,
   formatDanish,
   parseDanishNumber,
   recommendDivision
@@ -43,6 +46,20 @@ test("beregner maksimal deling og anbefaler en gyldig standarddeling", () => {
   closeTo(recommendDivision(maximum), 0.1);
   closeTo(recommendDivision(0.07), 0.05);
   closeTo(recommendDivision(0.049), 0.01);
+});
+
+test("angiver vægtens decimaler på gramvisningen", () => {
+  const result = calculateScaleRecommendation(1, "mg", 1, 2);
+  closeTo(result.maximumInUnit, 0.006097560975609756);
+  closeTo(result.recommendedInUnit, 0.005);
+  closeTo(result.recommendedGrams, 0.000005);
+  assert.equal(result.decimals, 6);
+  assert.equal(decimalPlacesForDivision(result.recommendedGrams), 6);
+});
+
+test("fortolker valgte decimaler som decimaler i gram", () => {
+  closeTo(divisionFromGramDecimals(5, "mg"), 0.01);
+  closeTo(divisionFromGramDecimals(3, "kg"), 0.000001);
 });
 
 test("beregner nødvendig tolerance og absolut tolerance", () => {

@@ -1,10 +1,10 @@
-const CACHE_NAME = "lab-beregner-v1";
+const CACHE_NAME = "lab-beregner-v2";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css",
-  "./app.js",
-  "./calculations.js",
+  "./styles.css?v=2",
+  "./app.js?v=2",
+  "./calculations.js?v=2",
   "./manifest.webmanifest",
   "./icons/icon.svg",
   "./icons/icon-192.png",
